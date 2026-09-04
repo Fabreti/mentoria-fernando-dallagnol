@@ -238,7 +238,7 @@ section{padding:110px 0;position:relative}
 .fmt-card p{font-size:.94rem;color:var(--papel-2);line-height:1.6;max-width:44ch}
 
 /* PROVA — prints e depoimentos */
-.prints{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.prints{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;align-items:start}
 @media(max-width:940px){.prints{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:600px){.prints{grid-template-columns:1fr}}
 .print{aspect-ratio:3/4;border:1px solid var(--line);background:var(--surface);
@@ -256,6 +256,8 @@ section{padding:110px 0;position:relative}
            color:var(--areia-2);margin-bottom:10px}
 .print .ps{font-size:.8rem;color:var(--muted-2);line-height:1.55;max-width:24ch;margin:0 auto}
 .print img{width:100%;height:100%;object-fit:cover;object-position:top}
+.print.shot{aspect-ratio:auto}
+.print.shot img{width:100%;height:auto;object-fit:contain}
 
 .depos{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);
        border:1px solid var(--line);margin-top:44px}
@@ -546,33 +548,18 @@ footer{border-top:1px solid var(--line);padding:40px 0}
       <p class="lead" style="margin-top:20px">Print, sem edição. É o que chega no meu WhatsApp de quem já implantou.</p>
     </div>
 
-    <!-- ESPAÇO PARA PRINTS 01 a 06 — substituir cada .pin por
-         <img src="assets/print-01.png" alt="Mensagem de mentorado">
-         e apagar a etiqueta correspondente. Recorte vertical 3:4, sem foto de perfil e sem telefone. -->
     <div class="prints rv">
-      <figure class="print">
+      <figure class="print shot">
         <span class="corner c1"></span><span class="corner c2"></span><span class="corner c3"></span><span class="corner c4"></span>
-        <div class="pin"><div class="pt">Print 01</div><p class="ps">Mensagem de mentorado. Recorte vertical 3:4.</p></div>
+        <img src="assets/print-01.png" alt="Mensagem de mentorada agradecendo a mentoria" loading="lazy">
       </figure>
-      <figure class="print">
+      <figure class="print shot">
         <span class="corner c1"></span><span class="corner c2"></span><span class="corner c3"></span><span class="corner c4"></span>
-        <div class="pin"><div class="pt">Print 02</div><p class="ps">Mensagem de mentorado. Recorte vertical 3:4.</p></div>
+        <img src="assets/print-02.png" alt="Mensagem de mentorado sobre o formulário de acompanhamento de corretores" loading="lazy">
       </figure>
-      <figure class="print">
+      <figure class="print shot">
         <span class="corner c1"></span><span class="corner c2"></span><span class="corner c3"></span><span class="corner c4"></span>
-        <div class="pin"><div class="pt">Print 03</div><p class="ps">Mensagem de mentorado. Recorte vertical 3:4.</p></div>
-      </figure>
-      <figure class="print">
-        <span class="corner c1"></span><span class="corner c2"></span><span class="corner c3"></span><span class="corner c4"></span>
-        <div class="pin"><div class="pt">Print 04</div><p class="ps">Mensagem de mentorado. Recorte vertical 3:4.</p></div>
-      </figure>
-      <figure class="print">
-        <span class="corner c1"></span><span class="corner c2"></span><span class="corner c3"></span><span class="corner c4"></span>
-        <div class="pin"><div class="pt">Print 05</div><p class="ps">Mensagem de mentorado. Recorte vertical 3:4.</p></div>
-      </figure>
-      <figure class="print">
-        <span class="corner c1"></span><span class="corner c2"></span><span class="corner c3"></span><span class="corner c4"></span>
-        <div class="pin"><div class="pt">Print 06</div><p class="ps">Mensagem de mentorado. Recorte vertical 3:4.</p></div>
+        <img src="assets/print-03.png" alt="Mensagem de mentorada sobre os apontamentos da mentoria" loading="lazy">
       </figure>
     </div>
 
