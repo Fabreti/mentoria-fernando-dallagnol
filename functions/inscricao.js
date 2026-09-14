@@ -34,6 +34,9 @@ export const onRequestPost = async ({ request, env }) => {
   const utm = corpo.utm && typeof corpo.utm === 'object' ? corpo.utm : {};
   const inscricao = {
     evento: 'masterclass_follow_up',
+    // o CRM exige "name"; as demais chaves vão em inglês e português para casar com o mapeamento dele
+    name: nome,
+    phone: whatsapp,
     nome,
     email,
     whatsapp,
