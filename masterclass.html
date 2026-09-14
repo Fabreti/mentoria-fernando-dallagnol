@@ -315,17 +315,21 @@ footer{border-top:1px solid var(--line);padding:40px 0}
   .js .d1{transition-delay:.09s}.js .d2{transition-delay:.18s}.js .d3{transition-delay:.27s}
 }
 
-/* Masterclass — dobra com inscrição */
-.mc-grid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:56px;align-items:center}
-@media(max-width:980px){.mc-grid{grid-template-columns:1fr;gap:40px}}
+/* Masterclass — dobra e pop-up de inscrição */
 .mc-meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:30px}
 .mc-meta span{font-family:var(--mono);font-size:.64rem;letter-spacing:.16em;text-transform:uppercase;
   color:var(--areia);border:1px solid var(--marrom-2);background:rgba(14,8,6,.55);padding:8px 12px}
 .mc-dor{margin-top:22px;color:var(--papel-2);max-width:56ch;line-height:1.65}
-.mc-form{background:rgba(28,17,12,.94);border:1px solid var(--marrom-2);padding:32px 30px;
-  backdrop-filter:blur(6px)}
-.mc-form h2{font-size:clamp(1.7rem,3.2vw,2.3rem);line-height:.95}
-.mc-form .sub{color:var(--muted);font-size:.9rem;margin-top:10px;line-height:1.5}
+.mc-modal{border:0;padding:0;background:transparent;color:var(--papel);
+  width:min(440px,calc(100% - 32px));max-height:calc(100% - 32px);margin:auto}
+.mc-modal::backdrop{background:rgba(8,4,3,.82);backdrop-filter:blur(3px)}
+.mc-modal[open]{animation:mc-entra .28s cubic-bezier(.16,1,.3,1)}
+@keyframes mc-entra{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.mc-form{position:relative;background:var(--surface);border:1px solid var(--marrom-2);padding:36px 30px 28px}
+.mc-form h2{font-size:clamp(1.9rem,6vw,2.4rem);line-height:.95;padding-right:32px}
+.mc-fechar{position:absolute;top:12px;right:14px;width:40px;height:40px;font-size:1.7rem;line-height:1;
+  color:var(--muted);background:none;border:0;cursor:pointer}
+.mc-fechar:hover{color:var(--areia)}
 .campo{display:block;margin-top:18px}
 .campo span{display:block;font-family:var(--mono);font-size:.6rem;letter-spacing:.18em;
   text-transform:uppercase;color:var(--areia-2);margin-bottom:8px}
@@ -337,7 +341,6 @@ footer{border-top:1px solid var(--line);padding:40px 0}
 .mc-form .btn{width:100%;margin-top:24px;padding:17px 20px;font-size:.72rem}
 .mc-form .btn[disabled]{opacity:.6;cursor:wait}
 .mc-erro{min-height:1.2em;margin-top:12px;font-size:.85rem;color:#e08a73}
-.mc-nota{font-size:.78rem;color:var(--muted-2);margin-top:6px;line-height:1.5}
 .armadilha{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
 </style>
 <!-- Google Tag Manager -->
@@ -370,7 +373,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <a href="#prova">Prova</a>
       <a href="#perguntas">Perguntas</a>
     </nav>
-    <a href="#inscricao" class="btn btn-primary btn-sm">Garantir minha vaga</a>
+    <a href="#inscricao" class="btn btn-primary btn-sm" data-abre-inscricao>Garantir minha vaga</a>
   </div>
 </header>
 
@@ -380,20 +383,25 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <img src="assets/fernando-operacao.jpg" alt="Fernando Dall'Agnol na sede da Forthe Imobiliária, em Cascavel">
   </div>
   <div class="wrap hero-in">
-    <div class="mc-grid">
-      <div class="rv">
-        <span class="kicker">Masterclass gratuita · ao vivo</span>
-        <h1><span class="hl-r">Follow-up</span><br><span class="hl-g">que converte mais</span></h1>
-        <p class="lead">O lead não sumiu — ele está no WhatsApp de outro corretor.</p>
-        <p class="mc-dor">Aula ao vivo sobre o que fazer entre o primeiro contato e a visita, com Fernando Dall'Agnol, corretor desde 2010 e sócio da Forthe Imobiliária.</p>
-        <div class="mc-meta">
-          <span>Terça, 29 de setembro</span><span>19h</span><span>Online e ao vivo</span><span>Gratuito</span>
-        </div>
+    <div class="rv hero-col">
+      <span class="kicker">Masterclass gratuita · ao vivo</span>
+      <h1><span class="hl-r">Follow-up</span><br><span class="hl-g">que converte mais</span></h1>
+      <p class="lead">O lead não sumiu — ele está no WhatsApp de outro corretor.</p>
+      <p class="mc-dor">Aula ao vivo sobre o que fazer entre o primeiro contato e a visita, com Fernando Dall'Agnol, corretor desde 2010 e sócio da Forthe Imobiliária.</p>
+      <div class="mc-meta">
+        <span>Terça, 29 de setembro</span><span>19h</span><span>Online e ao vivo</span><span>Gratuito</span>
       </div>
+      <div class="hero-cta">
+        <button type="button" class="btn btn-primary" data-abre-inscricao>Quero minha vaga</button>
+      </div>
+    </div>
+  </div>
+</section>
 
-      <form class="mc-form rv d1" id="inscricao" novalidate>
-        <h2>Garanta sua vaga</h2>
-        <p class="sub">Vaga garantida só com inscrição.</p>
+<dialog class="mc-modal" id="modal-inscricao" aria-labelledby="mc-titulo">
+      <form class="mc-form" id="inscricao" novalidate>
+        <button type="button" class="mc-fechar" data-fecha-inscricao aria-label="Fechar">×</button>
+        <h2 id="mc-titulo">Garanta sua vaga</h2>
 
         <label class="campo"><span>Nome</span>
           <input name="nome" id="mc-nome" type="text" autocomplete="name" placeholder="Seu nome" required>
@@ -410,11 +418,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
         <button class="btn btn-primary" type="submit">Quero minha vaga</button>
         <p class="mc-erro" role="alert"></p>
-        <p class="mc-nota">Seus dados são usados só para enviar o acesso e os avisos da masterclass.</p>
       </form>
-    </div>
-  </div>
-</section>
+</dialog>
 
 <!-- MANIFESTO — narrativa da V2 original, com o vocabulário do conceito antigo substituído.
      Regra desta versão: a metáfora existe apenas na headline. Nenhuma referência de
@@ -740,8 +745,20 @@ document.querySelectorAll('.q').forEach(function(q){
 <script>
 (function(){
   var form=document.getElementById('inscricao'); if(!form) return;
+  var modal=document.getElementById('modal-inscricao');
   var erro=form.querySelector('.mc-erro'), botao=form.querySelector('button[type=submit]');
   var tel=document.getElementById('mc-whatsapp');
+
+  function abrir(e){
+    if(e) e.preventDefault();
+    if(modal.showModal){ if(!modal.open) modal.showModal(); } else { modal.setAttribute('open',''); }
+    setTimeout(function(){ form.nome.focus(); },60);
+  }
+  function fechar(){ if(modal.close) modal.close(); else modal.removeAttribute('open'); }
+  document.querySelectorAll('[data-abre-inscricao]').forEach(function(b){ b.addEventListener('click',abrir); });
+  modal.querySelector('[data-fecha-inscricao]').addEventListener('click',fechar);
+  modal.addEventListener('click',function(e){ if(e.target===modal) fechar(); });
+  if(location.hash==='#inscricao') abrir();
 
   tel.addEventListener('input',function(){
     var d=tel.value.replace(/\D/g,'').replace(/^55(?=\d{10,11}$)/,'').slice(0,11);
