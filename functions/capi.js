@@ -26,8 +26,9 @@ export const onRequestPost = async ({ request, env }) => {
   } catch {
     return Response.json({ erro: 'json inválido' }, { status: 400 });
   }
-  if (!corpo.event_name) {
-    return Response.json({ erro: 'event_name obrigatório' }, { status: 400 });
+  // endpoint público: só aceita os eventos que o site realmente dispara
+  if (!['Contact', 'Lead'].includes(corpo.event_name)) {
+    return Response.json({ erro: 'event_name não permitido' }, { status: 400 });
   }
 
   const user_data = {
