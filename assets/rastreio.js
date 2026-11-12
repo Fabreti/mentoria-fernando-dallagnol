@@ -5,10 +5,16 @@
   var CHAVE = 'fd_origem', VALIDADE = 30 * 864e5;
   var q = new URLSearchParams(location.search);
   var nova = {};
-  ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content'].forEach(function (k) {
+  var CHAVES_UTM = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'utm_id'];
+  CHAVES_UTM.forEach(function (k) {
     if (q.get(k)) nova[k] = q.get(k);
   });
-  if (q.get('fbclid')) nova.fbclid = 1;
+  if (q.get('fbclid')) {
+    nova.fbclid = q.get('fbclid');
+    if (!/(?:^|;\s*)_fbc=/.test(d.cookie)) {
+      d.cookie = '_fbc=fb.1.' + Date.now() + '.' + nova.fbclid + ';max-age=' + 90 * 86400 + ';path=/;SameSite=Lax';
+    }
+  }
 
   var origem = null;
   try {
@@ -33,6 +39,14 @@
       if (host !== location.hostname) ref = host;
     } catch (e) {}
   }
+
+  var utm = {};
+  CHAVES_UTM.forEach(function (k) { utm[k] = (origem && origem[k]) || ''; });
+  w.fdOrigem = {
+    utm: utm,
+    fbclid: origem && typeof origem.fbclid === 'string' ? origem.fbclid : '',
+    ref: ref,
+  };
 
   if (ref) {
     d.querySelectorAll('a[href*="wa.me/"]').forEach(function (a) {
