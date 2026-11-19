@@ -5,7 +5,19 @@ import { enviarEventoMeta } from '../capi.js';
 
 const limpar = (v, max = 200) => String(v ?? '').trim().slice(0, max);
 
-export const CARGOS = ['Dono/sócio', 'Diretor/gestor', 'Corretor', 'Outro'];
+export const PROFISSOES = [
+  'Dono(a)/sócio(a) de imobiliária',
+  'Gestor(a)/gerente de imobiliária',
+  'Corretor(a) autônomo(a)',
+  'Corretor(a) em imobiliária',
+  'Incorporador(a)/construtor(a)',
+  'Outro',
+];
+
+// quem vê a agenda: só essas profissões, ou "Outro" com texto do ramo imobiliário
+const PROFISSOES_QUALIFICADAS = PROFISSOES.slice(0, 4);
+const RAMO_IMOBILIARIO = /imobil|imove|imovel|corret|creci|locac|aluguel|alugue|condominio/;
+const semAcento = (t) => t.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
 export const SETORES = ['Somente venda', 'Somente locação', 'Venda e locação', 'Avaliação', 'Incorporação', 'Todas as anteriores'];
 export const VGV = [
   'De R$ 0 a R$ 20.000.000,00',
@@ -27,15 +39,16 @@ export const DESAFIOS_VENDAS = [
   'Dificuldade no recrutamento e seleção de corretores',
 ];
 
-export const qualificar = (respostas) => {
-  // TODO: critério do Vinicius
-  return true;
+export const qualificar = (r) => {
+  if (PROFISSOES_QUALIFICADAS.includes(r.profissao)) return true;
+  return r.profissao === 'Outro' && RAMO_IMOBILIARIO.test(semAcento(r.profissao_outro));
 };
 
 const respostasDe = (corpo) => {
   const lista = Array.isArray(corpo.desafios_vendas) ? corpo.desafios_vendas : [];
   return {
-    cargo: limpar(corpo.cargo, 40),
+    profissao: limpar(corpo.profissao, 60),
+    profissao_outro: corpo.profissao === 'Outro' ? limpar(corpo.profissao_outro, 120) : '',
     tempo_mercado: limpar(corpo.tempo_mercado, 80),
     empresa_nome: limpar(corpo.empresa_nome, 160),
     socios: limpar(corpo.socios, 120),
@@ -53,7 +66,8 @@ const respostasDe = (corpo) => {
 };
 
 const faltando = (r) => {
-  if (!CARGOS.includes(r.cargo)) return 'Escolha seu cargo.';
+  if (!PROFISSOES.includes(r.profissao)) return 'Escolha sua profissão.';
+  if (r.profissao === 'Outro' && !r.profissao_outro) return 'Escreva qual é a sua profissão.';
   if (!r.tempo_mercado) return 'Informe seu tempo de mercado.';
   if (!r.empresa_nome) return 'Informe o nome da empresa.';
   if (!r.socios) return 'Responda sobre sócios.';

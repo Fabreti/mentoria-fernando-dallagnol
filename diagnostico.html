@@ -462,7 +462,8 @@ document.querySelectorAll('.q').forEach(function(q){
   var AGENDA_EMBED_URL = 'https://activelead.com.br/embed/agendar/fernando-dall-agnol/diagnostico';
   var AGENDA_ORIGEM = 'https://activelead.com.br';
 
-  var CARGOS = ['Dono/sócio','Diretor/gestor','Corretor','Outro'];
+  var PROFISSOES = ['Dono(a)/sócio(a) de imobiliária','Gestor(a)/gerente de imobiliária','Corretor(a) autônomo(a)',
+    'Corretor(a) em imobiliária','Incorporador(a)/construtor(a)','Outro'];
   var SETORES = ['Somente venda','Somente locação','Venda e locação','Avaliação','Incorporação','Todas as anteriores'];
   var VGV = ['De R$ 0 a R$ 20.000.000,00','De R$ 20.000.000,00 a R$ 50.000.000,00',
              'De R$ 50.000.000,00 a R$ 100.000.000,00','Acima de R$ 100.000.000,00'];
@@ -472,7 +473,7 @@ document.querySelectorAll('.q').forEach(function(q){
     'Gestão de dados deficitária/inexistente','Dificuldade no recrutamento e seleção de corretores'];
 
   var PERGUNTAS = [
-    {chave:'cargo', tipo:'unica', titulo:'Qual é o seu cargo na imobiliária?', opcoes:CARGOS},
+    {chave:'profissao', tipo:'unica', titulo:'Qual é a sua profissão?', opcoes:PROFISSOES, outro:'profissao_outro'},
     {chave:'tempo_mercado', tipo:'texto', titulo:'Quanto tempo de mercado imobiliário?', ph:'Ex.: 8 anos'},
     {chave:'empresa_nome', tipo:'texto', titulo:'Qual o nome da sua empresa?', ph:'Nome da imobiliária'},
     {chave:'socios', tipo:'texto', titulo:'Você tem sócios? Se sim, quantos?', ph:'Ex.: Não / Sim, 2 sócios'},
@@ -627,12 +628,26 @@ document.querySelectorAll('.q').forEach(function(q){
           } else {
             respostas[p.chave]=op;
             grupo.querySelectorAll('.opcao').forEach(function(o){ o.setAttribute('aria-checked',o===b?'true':'false'); });
+            if(p.outro){ campoOutro.hidden = op!=='Outro'; if(op==='Outro'){ inpOutro.focus(); return; } }
             setTimeout(avancar,220);
           }
         });
         grupo.appendChild(b);
       });
       alvo.appendChild(grupo);
+      if(p.outro){
+        var campoOutro=el('label',{'class':'campo campo-outro'});
+        campoOutro.appendChild(el('span',{},'Qual?'));
+        var inpOutro=el('input',{type:'text',placeholder:'Escreva sua profissão',autocomplete:'off',maxlength:'120'});
+        inpOutro.value=respostas[p.outro]||'';
+        inpOutro.addEventListener('input',function(){
+          respostas[p.outro]=inpOutro.value;
+          if(inpOutro.value.trim()){ inpOutro.removeAttribute('aria-invalid'); erroPerg.textContent=''; }
+        });
+        campoOutro.appendChild(inpOutro);
+        campoOutro.hidden = respostas[p.chave]!=='Outro';
+        alvo.appendChild(campoOutro);
+      }
     } else if(p.tipo==='escala'){
       var esc=el('div',{'class':'escala',role:'radiogroup','aria-labelledby':idT});
       for(var n=0;n<=10;n++){
@@ -660,6 +675,7 @@ document.querySelectorAll('.q').forEach(function(q){
     var v=respostas[p.chave];
     if(p.opcional) return true;
     if(p.tipo==='multipla') return v.length>0;
+    if(p.outro && v==='Outro') return String(respostas[p.outro]||'').trim()!=='';
     return v!=null && String(v).trim()!=='';
   }
 
@@ -667,9 +683,10 @@ document.querySelectorAll('.q').forEach(function(q){
     if(enviando) return;
     var p=PERGUNTAS[atual];
     if(!valido(p)){
-      erroPerg.textContent = p.tipo==='multipla' ? 'Marque ao menos uma opção.'
+      erroPerg.textContent = p.outro && respostas[p.chave]==='Outro' ? 'Escreva qual é a sua profissão.'
+        : p.tipo==='multipla' ? 'Marque ao menos uma opção.'
         : (p.tipo==='unica'||p.tipo==='escala') ? 'Escolha uma opção.' : 'Responda para continuar.';
-      var c=alvo.querySelector('input,textarea'); if(c){ c.setAttribute('aria-invalid','true'); c.focus(); }
+      var c=alvo.querySelector('input:not([hidden] input),textarea'); if(c && c.offsetParent!==null){ c.setAttribute('aria-invalid','true'); c.focus(); }
       return;
     }
     if(atual<PERGUNTAS.length-1) mostrar(atual+1); else concluir();
